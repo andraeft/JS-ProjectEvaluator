@@ -8,15 +8,11 @@ const sequelize = new Sequelize('project_db', 'root', 'parola123', {
 let Project = sequelize.define('project', {
     title : {
         type : Sequelize.STRING,
-        allowNull : false,
-        values : ['Boeing', 'Airbus']
+        allowNull : false
     },
     deliverables : {
         type : Sequelize.STRING,
-        allowNull : false,
-        validate : {
-            len : [2-5]
-        }
+        allowNull : false
     },
     dueDate : {
         type : Sequelize.DATE
@@ -41,6 +37,11 @@ let User = sequelize.define('user', {
     password : {
         type : Sequelize.STRING,
         allowNull: false
+    },
+    type : {
+        type : Sequelize.ENUM,
+        allowNull : false,
+        values : ['STUDENT', 'PROF']
     }
 }) 
 
@@ -48,7 +49,7 @@ let ProjectRole = sequelize.define('projectRole', {
     role : {
         type : Sequelize.ENUM,
         allowNull : false,
-        values : ['EVAL', 'MP', 'PROF']
+        values : ['EVAL', 'MP']
     }
 })
 

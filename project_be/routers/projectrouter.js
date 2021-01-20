@@ -6,6 +6,7 @@ const router = express.Router()
 
 router.get('/sync', projectController.sync)
 
+// localhost:8080/api/projects
 router.get('/projects', projectController.getProjects)
 
 router.post('/projects', projectController.addProject)

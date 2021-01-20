@@ -2,12 +2,16 @@
   <div id="app">
     <div v-if="isLogged"> Hello, {{ user.username }} </div>
     <div id="nav">
-      <router-link to="/">My projects</router-link> |
-      <router-link to="/eval">Evaluations</router-link> |
-      <!-- <router-link to="/about">About</router-link> | -->
+      <div  v-if="isLogged === true && user.type == 'STUDENT' ">
+        <router-link to="/">My projects</router-link> |
+        <router-link to="/eval">Evaluations</router-link> |
+        <router-link to="/add-project">Create a project</router-link> |
+      </div>
+      <div  v-if="isLogged === true && user.type == 'PROF' ">
+        <router-link to="/">All projects</router-link>
+      </div>
       <router-link to="/login">Login</router-link> |
-      <router-link to="/register">Register</router-link>|
-      <router-link to="/add-project">Create a project</router-link>
+      <router-link to="/register">Register</router-link>
     </div>
     <router-view />
   </div>

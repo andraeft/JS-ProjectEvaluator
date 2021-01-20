@@ -4,28 +4,30 @@
         <h1> {{ project.title }} </h1>
         <i v-if="project.userId == currentUser.id"> you created this project </i>
         <p> {{project.deliverables}} </p>
-        <p> video url: {{project.videoUrl}} </p>
-        <p> project link: {{project.projectLink}} </p>
+        <p> video url: <a :href="project.videoUrl"> {{project.videoUrl}} </a> </p>
+        <p> project link: <a :href="project.projectLink"> {{project.projectLink}} </a> </p>
         <p> expires on: {{project.dueDate}} </p>
     </div>
     <div v-if="project.userId == currentUser.id">
         <div v-if="hasJury==false">
          <button @click="generateJury()"> Generate jury </button>
-         <button @click="stopEvaluation()"> Stop evaluation </button>
         </div>
         <div v-if="hasJury==true">
-            <h2> Members of the jury have been assigned </h2>
-            <!-- <ul>
+            <h3> Members of the jury have been assigned. </h3>
+            <button @click="stopEvaluation()" v-if="project.finalGrade < 0"> Stop evaluation </button>
+            <h3 v-if="project.finalGrade > 0"> Evaluation has ended. <br> Project has been evaluated with: {{ project.finalGrade }} </h3>
+            <ul v-if="currentUser.type == 'PROF'">
                 <li v-for="member in jury" :key="member.id">
                     {{ member.username }}
                 </li>
-            </ul> -->
+            </ul>
         </div>
     </div>
     <div v-if="userRole=='EVAL'">
         <br>
         <br>
         <i> You are a jury to this project. </i>
+        <p><i  v-if="project.finalGrade !== -1"> Evaluation has ended. </i></p>
         <form v-if="project.finalGrade == -1">
             <label for="grade"> Your grade to this project </label>
             <input type="number" v-model="projectGrade" name="grade" />

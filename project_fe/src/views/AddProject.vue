@@ -8,7 +8,7 @@
         <input type="text" name="videoUrl" v-model="videoUrl" placeholder="video url"/>
         <input type="text" name="projectLink" v-model="projectLink" placeholder="project link"/>
         <input type="date" name="dueDate" v-model="dueDate" placeholder="due date"/>
-        <input type="button" @click='createProject()' text="Create project"/>
+        <input type="button" @click='createProject()' value="Create project"/>
     </form>
 </div>
 </template>
@@ -41,7 +41,8 @@ export default {
           }
           createProject(payload).then(response => {
             console.log(response);
-            this.clearForm();
+            alert('Project successfully added!');
+            window.location.href = '/';
         });
       },
       clearForm() {

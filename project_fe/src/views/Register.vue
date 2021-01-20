@@ -5,6 +5,10 @@
         <input type="text" name="username" v-model="username" placeholder="username"/>
         <input type="password" name="password" v-model="password" placeholder="password"/>
         <input type="password" name="password2" placeholder="confirm password"/>
+        <select name="pets" v-model="type">
+            <option value="STUDENT">Student</option>
+            <option value="PROF">Professor</option>
+        </select>
         <input type="button" @click='addUser()' value="Register"/>
     </form>
 </div>
@@ -31,7 +35,8 @@ export default {
     data() {
         return {
             username: '',
-            password: ''
+            password: '',
+            type: 'STUDENT'
         }
     },
     methods: {
@@ -39,6 +44,7 @@ export default {
           const payload = {
               username: this.username,
               password: this.password,
+              type: this.type
           }
           addUser(payload).then(response => {
             console.log(response);

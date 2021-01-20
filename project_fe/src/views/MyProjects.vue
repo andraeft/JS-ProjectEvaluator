@@ -31,7 +31,7 @@
 
 <script>
 // @ is an alias to /src
-import { isLoggedIn, gettAllProjectsByUserId } from '../services/dataService'
+import { isLoggedIn, gettAllProjectsByUserId, getAllProjects } from '../services/dataService'
 
 export default {
   name: "MyProjects",
@@ -44,9 +44,17 @@ export default {
     getAllProjects() {
       if (isLoggedIn()){
         const user = isLoggedIn();
-        gettAllProjectsByUserId(user.id).then(response => {
-          this.projects = response;
-        })
+        if (user.type == "STUDENT")
+        {
+            gettAllProjectsByUserId(user.id).then(response => {
+              this.projects = response;
+            })
+        } else if (user.type == "PROF") {
+            getAllProjects().then(response => {
+              this.projects = response;
+            })
+        }
+        
       }
       // } else {
       //   getAllProjects().then(response => {

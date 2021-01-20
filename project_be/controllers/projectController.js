@@ -158,7 +158,7 @@ const generateJury = async (req, res, next) => {
         // select * from users, projectrole where id == userid and projectId !== req.body
         // let userIds = await database.User.findAll({where: {projectId : { [database.Op.ne]: req.params.projectId}}, attributes: ['userId'], include: [projectRole]});
         //let userIds = await database.User.findAll({ include: {model: database.ProjectRole, where: {projectId : { [database.Op.ne]: req.params.projectId}}}});
-        let userIds = await database.User.findAll({attributes: ['id'], where: {id : { [database.Op.ne]: req.params.userId}}});
+        let userIds = await database.User.findAll({attributes: ['id'], where: {id : { [database.Op.ne]: req.params.userId},  type: "STUDENT"}});
         userIds = userIds.map(x => x.id);
         console.log("!!!!!!!!!!!");
         shuffle(userIds);
@@ -221,6 +221,26 @@ const getGrade = async (req, res, next) => {
 const stopEvaluation = async (req, res, next) => {
     try{
         // get all grades for project
+        let projectGrades = await database.Grade.findAll({where: {projectId: req.params.projectId}});
+        if (projectGrades) {
+            console.log('step1: ');
+            console.log(projectGrades);
+            projectGrades = projectGrades.map(x => x.dataValues.grade).sort((a, b) => {return a-b});
+            console.log('step 1jum: ');
+            console.log(projectGrades);
+            projectGrades = projectGrades.slice(1,projectGrades.length -1);
+            console.log('step2: ');
+            console.log(projectGrades);
+            const sum =  projectGrades.reduce((a,b) => a + b, 0);
+            console.log('sum: ' + sum);
+            const avg = sum / projectGrades.length;
+            const project = await database.Project.findByPk(req.params.projectId);
+            if (project){
+                console.log('updating project... ' + avg)
+                project.update({finalGrade: avg});
+                res.status(201).json(project);
+            }
+        }
         // order them
         // remove first and last
         // find average
