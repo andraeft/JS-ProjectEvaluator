@@ -16,11 +16,12 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    flex-wrap: wrap;
     width: 80%;
     margin: auto;
 
     .project-card{
-      width: 49%;
+      width: 43%;
       padding: 10px;
       margin: 5px;
       border: 1px solid #eeeeee;
@@ -30,10 +31,10 @@
 
 <script>
 // @ is an alias to /src
-import { getAllProjects } from '../services/dataService'
+import { isLoggedIn, gettAllProjectsByUserId } from '../services/dataService'
 
 export default {
-  name: "Home",
+  name: "MyProjects",
   data() {
       return {
           projects: []
@@ -41,10 +42,18 @@ export default {
   },
   methods: {
     getAllProjects() {
-      getAllProjects().then(response => {
-        console.log(response)
-        this.projects = response
-      })
+      if (isLoggedIn()){
+        const user = isLoggedIn();
+        gettAllProjectsByUserId(user.id).then(response => {
+          this.projects = response;
+        })
+      }
+      // } else {
+      //   getAllProjects().then(response => {
+      //     console.log(response)
+      //     this.projects = response
+      //   })
+      // }
     }
   },
   mounted () {

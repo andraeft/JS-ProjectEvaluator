@@ -60,13 +60,15 @@ let Grade = sequelize.define('grade', {
 
 Project.hasMany(ProjectRole)
 User.hasMany(ProjectRole)
-User.hasMany(Grade)
-Project.hasMany(Grade)
+Grade.belongsTo(User)
+Grade.belongsTo(Project)
+Project.belongsTo(User)
 
 module.exports = {
     sequelize,
     Project,
     User,
     ProjectRole,
+    Grade,
     Op
 }

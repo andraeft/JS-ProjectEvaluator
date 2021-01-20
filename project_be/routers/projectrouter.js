@@ -10,6 +10,8 @@ router.get('/projects', projectController.getProjects)
 
 router.post('/projects', projectController.addProject)
 
+router.get('/projects-user/:userId', projectController.getProjectByUserId)
+
 router.get('/projects/:id', projectController.getProjectById)
 
 router.put('/projects/:id', projectController.updateProject)
@@ -24,6 +26,16 @@ router.get('/project-role/:userId/:projectId', projectController.getProjectRole)
 
 router.post('/generate-jury/:userId/:projectId', projectController.generateJury);
 
-router.get('/project-jury/:projectId', projectController.getProjectJury);
+router.get('/jury/:projectId', projectController.getProjectJury);
+
+router.get('/projects-jury/:userId', projectController.gettAllEvaluationProjectsByUserId);
+
+router.post('/grades', projectController.addGrade);
+
+router.put('/grades', projectController.addGrade);
+
+router.get('/grade/:userId/:projectId', projectController.getGrade);
+
+router.post('/stop/:projectId', projectController.stopEvaluation)
 
 module.exports = router

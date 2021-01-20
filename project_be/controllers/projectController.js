@@ -51,7 +51,7 @@ const addProject = async (req, res, next) => {
     try {
         console.log('===================');
         console.log(req.body);
-        await database.Project.create(req.body.project).then(response => {
+        await database.Project.create(req.body).then(response => {
             console.log("PROJECT INSERTED: " + JSON.stringify(response));
             database.ProjectRole.create({userId: req.body.userId, projectId: response.id, role: "MP"})
         });
@@ -76,6 +76,35 @@ const getProjectById = async (req, res, next) => {
     }    
 }
 
+const getProjectByUserId = async (req, res, next) => {
+    try {
+        let projects = await database.Project.findAll({ where: {userId: req.params.userId}})
+        // let projects = await database.ProjectRole.findAll({where: {userId: req.params.userId}, include: [database.Project]});
+        if (projects){
+            res.status(200).json(projects)    
+        }
+        else{
+            res.status(404).json({message : 'not found'})   
+        }
+    } catch (err) {
+        next(err)
+    }    
+}
+
+const gettAllEvaluationProjectsByUserId = async (req, res, next) => {
+    try {
+        let projects = await database.Project.findAll({include: [{model: database.ProjectRole, where: {userId: req.params.userId, role: "EVAL"} }] })
+        // let projects = await database.ProjectRole.findAll({where: {userId: req.params.userId}, include: [database.Project]});
+        if (projects){
+            res.status(200).json(projects)    
+        }
+        else{
+            res.status(404).json({message : 'not found'})   
+        }
+    } catch (err) {
+        next(err)
+    }   
+}
 // app.put('/projects/:id', async
 const updateProject = async (req, res, next) => {
     try {
@@ -133,7 +162,7 @@ const generateJury = async (req, res, next) => {
         userIds = userIds.map(x => x.id);
         console.log("!!!!!!!!!!!");
         shuffle(userIds);
-        for (let i = 0; i < 2; i++){
+        for (let i = 0; i < 4; i++){
             database.ProjectRole.create({userId: userIds[i], projectId: req.params.projectId, role: 'EVAL'})
         }
         console.log(userIds);
@@ -145,11 +174,58 @@ const generateJury = async (req, res, next) => {
 
 const getProjectJury = async (req, res, next) => {
     try {
-        let jury = await database.ProjectRole.findAll({where: {projectId: req.params.projectId}});
+        // let jury = await database.ProjectRole.findAll({where: {projectId: req.params.projectId}, include: [database.User]});
+        let jury = await database.User.findAll({ include: [{model: database.ProjectRole, where: {projectId: req.params.projectId, role: 'EVAL'}}]});
         if (jury) {
             res.status(200).json(jury);
         }
     } catch (err){
+        next(err)
+    }
+}
+
+const addGrade = async (req, res, next) => {
+    try{
+        const obj = await database.Grade.findOne({ where: {userId: req.body.userId, projectId: req.body.projectId}});
+        // update
+        if(obj) {
+            // obj.grade = req.body.grade;
+            obj.update({grade: req.body.grade});
+            res.status(201).json({message : 'updated'});
+        }
+        // insert
+        else{
+            await database.Grade.create(req.body);
+            res.status(201).json({message : 'created'})
+        }
+    } catch (err){
+        next(err)
+    }
+}
+
+const getGrade = async (req, res, next) => {
+    try{
+        database.Grade.findOne({ where: {userId: req.params.userId, projectId: req.params.projectId}}).then(grade => {
+            if (grade){
+                res.status(200).json(grade.dataValues)    
+            }
+            else{
+                res.status(404).json({message : 'not found'})   
+            }
+        });
+    } catch (err){
+        next(err)
+    }
+}
+
+const stopEvaluation = async (req, res, next) => {
+    try{
+        // get all grades for project
+        // order them
+        // remove first and last
+        // find average
+        // update project finalGrade
+    } catch (err) {
         next(err)
     }
 }
@@ -182,5 +258,10 @@ module.exports = {
     getProjectRole,
     generateJury,
     getProjectJury,
+    getProjectByUserId,
+    gettAllEvaluationProjectsByUserId,
+    addGrade,
+    getGrade,
+    stopEvaluation,
     sync
   }

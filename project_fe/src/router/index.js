@@ -1,14 +1,14 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import MyProjects from "../views/MyProjects.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home
+    name: "MyProjects",
+    component: MyProjects
   },
   {
     path: "/about",
@@ -38,6 +38,11 @@ const routes = [
     path: "/project/:id",
     name: "ProjectPage",
     component: () => import("../views/ProjectPage.vue")
+  },
+  {
+    path: "/eval",
+    name: "Evaluations",
+    component: () => import("../views/Evaluations.vue")
   }
 ];
 
